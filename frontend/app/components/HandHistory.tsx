@@ -50,7 +50,7 @@ const HandHistory = () => {
         <CardTitle>Hand history</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-4 h-[400px] overflow-y-auto pr-2">
           {handHistories.map((history) => (
             <div
               key={history.id}

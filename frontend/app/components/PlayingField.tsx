@@ -73,7 +73,7 @@ const PlayingField = () => {
         </div>
 
         {gameState && (
-          <div className="space-y-2 player-cards">
+          <div className="space-y-2 player-cards h-[300px] overflow-y-auto pr-2">
             {/* Player information */}
             {gameState.stacks.map((stack, index) => (
               <div key={index} className="text-sm">

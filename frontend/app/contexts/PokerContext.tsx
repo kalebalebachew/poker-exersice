@@ -20,6 +20,7 @@ interface PokerContextType {
   resetGame: () => Promise<void>;
   performAction: (action: Action) => Promise<void>;
   formatActionShort: (action: Action) => string;
+  clearHandHistories: () => Promise<void>;
 }
 
 const PokerContext = createContext<PokerContextType | undefined>(undefined);
@@ -174,6 +175,22 @@ export const PokerProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Clear hand histories
+  const clearHandHistories = async () => {
+    try {
+      setIsLoading(true);
+      console.log("Clearing hand histories...");
+      await pokerApi.clearHandHistories();
+      setHandHistories([]);
+      setError(null);
+    } catch (err) {
+      console.error("Failed to clear hand histories:", err);
+      setError("Failed to clear hand histories");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <PokerContext.Provider
       value={{
@@ -187,6 +204,7 @@ export const PokerProvider = ({ children }: { children: ReactNode }) => {
         resetGame,
         performAction,
         formatActionShort,
+        clearHandHistories,
       }}
     >
       {children}

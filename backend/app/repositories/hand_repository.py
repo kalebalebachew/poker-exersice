@@ -174,3 +174,13 @@ class HandRepository:
                 )
                 for result in results
             ] 
+            
+    def clear_all_poker_hands(self) -> int:
+        """Clear all poker hands from the database.
+        
+        Returns:
+            int: Number of deleted records
+        """
+        with get_db_cursor() as cursor:
+            cursor.execute("DELETE FROM poker_hands")
+            return cursor.rowcount 

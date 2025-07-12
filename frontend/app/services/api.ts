@@ -141,6 +141,14 @@ export const pokerApi = {
       return handleApiError(error);
     }
   },
+
+  clearHandHistories: async (): Promise<void> => {
+    try {
+      await api.delete(`${API_PREFIX}/games/`);
+    } catch (error) {
+      return handleApiError(error);
+    }
+  },
 };
 
 export default pokerApi;

@@ -2,12 +2,14 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { usePoker } from "../contexts/PokerContext";
 import { formatCard } from "../utils/poker";
 import { HandHistory as HandHistoryType } from "../services/api";
 
 const HandHistory = () => {
-  const { handHistories, formatActionShort } = usePoker();
+  const { handHistories, formatActionShort, clearHandHistories, isLoading } =
+    usePoker();
 
   // Format the action sequence in short format
   const formatActionSequence = (history: HandHistoryType) => {
@@ -44,10 +46,24 @@ const HandHistory = () => {
       .join("; ");
   };
 
+  const handleClearHistory = async () => {
+    await clearHandHistories();
+  };
+
   return (
     <Card className="w-full">
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Hand history</CardTitle>
+        {handHistories.length > 0 && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleClearHistory}
+            disabled={isLoading}
+          >
+            {isLoading ? "Clearing..." : "Clear History"}
+          </Button>
+        )}
       </CardHeader>
       <CardContent>
         <div className="space-y-4 h-[400px] overflow-y-auto pr-2">

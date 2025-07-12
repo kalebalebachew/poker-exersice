@@ -189,6 +189,17 @@ async def get_games(repository: HandRepository = Depends(get_repository)):
     ]
 
 
+@router.delete("/games/", status_code=status.HTTP_204_NO_CONTENT)
+async def clear_games(repository: HandRepository = Depends(get_repository)):
+    """
+    Clear all saved poker games.
+    
+    This endpoint deletes all previously played poker games from the database.
+    """
+    deleted_count = repository.clear_all_poker_hands()
+    return None  # 204 No Content response doesn't need a body
+
+
 @router.get("/games/{game_id}", response_model=PokerHandResponse)
 async def get_game(
     game_id: str,

@@ -1,0 +1,551 @@
+openapi: 3.1.0
+info:
+  title: Poker Hand Evaluator API
+  description: |
+    API for evaluating poker hands and managing poker games.
+
+    This API provides endpoints to:
+    - Evaluate poker hands
+    - Create and manage poker games
+    - Track game history
+    - Calculate winnings
+  version: 1.0.0
+  contact:
+    name: Poker API Support
+    email: support@pokerapi.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local development server
+  - url: https://api.pokerapp.com/api/v1
+    description: Production server
+
+tags:
+  - name: hands
+    description: Operations related to poker hands
+  - name: games
+    description: Operations related to poker games
+
+paths:
+  /poker/hands/:
+    post:
+      tags:
+        - hands
+      summary: Create a new poker hand
+      description: Create a new poker hand and evaluate it
+      operationId: createHand
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HandCreate"
+      responses:
+        "201":
+          description: Hand created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HandResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags:
+        - hands
+      summary: Get all poker hands
+      description: Retrieve all saved poker hands
+      operationId: getHands
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HandResponse"
+
+  /poker/hands/{handId}:
+    get:
+      tags:
+        - hands
+      summary: Get a specific poker hand
+      description: Retrieve a specific poker hand by ID
+      operationId: getHand
+      parameters:
+        - name: handId
+          in: path
+          description: ID of the hand to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HandResponse"
+        "404":
+          description: Hand not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /poker/games/:
+    post:
+      tags:
+        - games
+      summary: Create a new poker game
+      description: Create a new poker game with fresh deck and positions
+      operationId: createGame
+      responses:
+        "201":
+          description: Game created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameState"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags:
+        - games
+      summary: Get all poker games
+      description: Retrieve all saved poker games
+      operationId: getGames
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PokerHandResponse"
+
+  /poker/games/{gameId}:
+    get:
+      tags:
+        - games
+      summary: Get a specific poker game
+      description: Retrieve a specific poker game by ID
+      operationId: getGame
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of the game to retrieve
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PokerHandResponse"
+        "404":
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /poker/games/evaluate/:
+    post:
+      tags:
+        - games
+      summary: Evaluate a poker game
+      description: Evaluate a complete poker game and calculate winnings
+      operationId: evaluateGame
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PokerHandCreate"
+      responses:
+        "200":
+          description: Game evaluated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameResults"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /poker/games/{gameId}/actions/:
+    post:
+      tags:
+        - games
+      summary: Add an action to a game
+      description: Add a new action to an existing poker game
+      operationId: addAction
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of the game to add an action to
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Action"
+      responses:
+        "200":
+          description: Action added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameState"
+        "400":
+          description: Invalid action
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    HandCreate:
+      type: object
+      required:
+        - cards
+      properties:
+        cards:
+          type: array
+          description: List of cards in the hand
+          items:
+            type: string
+            example: "As"
+          minItems: 5
+      example:
+        cards: ["As", "Ks", "Qs", "Js", "Ts"]
+
+    HandResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the hand
+          example: 1
+        cards:
+          type: array
+          description: List of cards in the hand
+          items:
+            type: string
+            example: "As"
+        hand_type:
+          type: string
+          description: Type of poker hand
+          example: "Straight Flush"
+        rank:
+          type: integer
+          description: Rank of the hand (1-10)
+          example: 9
+      example:
+        id: 1
+        cards: ["As", "Ks", "Qs", "Js", "Ts"]
+        hand_type: "Straight Flush"
+        rank: 9
+
+    PokerHandCreate:
+      type: object
+      required:
+        - stacks
+        - positions
+        - player_cards
+        - board_cards
+        - actions
+      properties:
+        stacks:
+          type: array
+          description: Initial stacks for each player
+          items:
+            type: integer
+            example: 1000
+        positions:
+          type: object
+          description: Player positions
+          properties:
+            dealer:
+              type: integer
+              description: Dealer position
+              example: 0
+            sb:
+              type: integer
+              description: Small blind position
+              example: 1
+            bb:
+              type: integer
+              description: Big blind position
+              example: 2
+        player_cards:
+          type: object
+          description: Cards for each player
+          additionalProperties:
+            type: array
+            items:
+              type: string
+              example: "Ah"
+        board_cards:
+          type: array
+          description: Community cards
+          items:
+            type: string
+            example: "As"
+        actions:
+          type: array
+          description: List of actions taken during the hand
+          items:
+            $ref: "#/components/schemas/Action"
+      example:
+        stacks: [1000, 1000, 1000, 1000, 1000, 1000]
+        positions: { "dealer": 0, "sb": 1, "bb": 2 }
+        player_cards:
+          {
+            "0": ["Ah", "Kd"],
+            "1": ["Qc", "Js"],
+            "2": ["Td", "9h"],
+            "3": ["8c", "7s"],
+            "4": ["6d", "5h"],
+            "5": ["4c", "3s"],
+          }
+        board_cards: ["As", "Ks", "Qs", "Js", "Ts"]
+        actions:
+          [{ "type": "call", "player": 3 }, { "type": "fold", "player": 4 }]
+
+    PokerHandResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the game
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        stacks:
+          type: array
+          description: Initial stacks for each player
+          items:
+            type: integer
+            example: 1000
+        positions:
+          type: object
+          description: Player positions
+          properties:
+            dealer:
+              type: integer
+              description: Dealer position
+              example: 0
+            sb:
+              type: integer
+              description: Small blind position
+              example: 1
+            bb:
+              type: integer
+              description: Big blind position
+              example: 2
+        player_cards:
+          type: object
+          description: Cards for each player
+          additionalProperties:
+            type: array
+            items:
+              type: string
+              example: "Ah"
+        board_cards:
+          type: array
+          description: Community cards
+          items:
+            type: string
+            example: "As"
+        actions:
+          type: array
+          description: List of actions taken during the hand
+          items:
+            $ref: "#/components/schemas/Action"
+        results:
+          type: object
+          description: Game results (winnings/losses for each player)
+          additionalProperties:
+            type: integer
+            example: 100
+      example:
+        id: "123e4567-e89b-12d3-a456-426614174000"
+        stacks: [1000, 1000, 1000, 1000, 1000, 1000]
+        positions: { "dealer": 0, "sb": 1, "bb": 2 }
+        player_cards:
+          {
+            "0": ["Ah", "Kd"],
+            "1": ["Qc", "Js"],
+            "2": ["Td", "9h"],
+            "3": ["8c", "7s"],
+            "4": ["6d", "5h"],
+            "5": ["4c", "3s"],
+          }
+        board_cards: ["As", "Ks", "Qs", "Js", "Ts"]
+        actions:
+          [{ "type": "call", "player": 3 }, { "type": "fold", "player": 4 }]
+        results: { "0": 100, "1": -50, "2": -50, "3": 0, "4": 0, "5": 0 }
+
+    Action:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          description: Type of action
+          enum:
+            [
+              fold,
+              check,
+              call,
+              bet,
+              raise,
+              allin,
+              deal_flop,
+              deal_turn,
+              deal_river,
+            ]
+          example: "bet"
+        player:
+          type: integer
+          description: Player index (0-5)
+          example: 0
+        amount:
+          type: integer
+          description: Amount for bet or raise
+          example: 40
+      example:
+        type: "bet"
+        player: 0
+        amount: 40
+
+    GameState:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the game
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        stacks:
+          type: array
+          description: Current stacks for each player
+          items:
+            type: integer
+            example: 1000
+        positions:
+          type: object
+          description: Player positions
+          properties:
+            dealer:
+              type: integer
+              description: Dealer position
+              example: 0
+            sb:
+              type: integer
+              description: Small blind position
+              example: 1
+            bb:
+              type: integer
+              description: Big blind position
+              example: 2
+        player_cards:
+          type: object
+          description: Cards for each player
+          additionalProperties:
+            type: array
+            items:
+              type: string
+              example: "Ah"
+        board_cards:
+          type: array
+          description: Community cards
+          items:
+            type: string
+            example: "As"
+        actions:
+          type: array
+          description: List of actions taken during the hand
+          items:
+            $ref: "#/components/schemas/Action"
+      example:
+        id: "123e4567-e89b-12d3-a456-426614174000"
+        stacks: [1000, 980, 960, 960, 1000, 1000]
+        positions: { "dealer": 0, "sb": 1, "bb": 2 }
+        player_cards:
+          {
+            "0": ["Ah", "Kd"],
+            "1": ["Qc", "Js"],
+            "2": ["Td", "9h"],
+            "3": ["8c", "7s"],
+            "4": ["6d", "5h"],
+            "5": ["4c", "3s"],
+          }
+        board_cards: ["As", "Ks", "Qs", "Js", "Ts"]
+        actions:
+          [{ "type": "call", "player": 3 }, { "type": "fold", "player": 4 }]
+
+    GameResults:
+      type: object
+      additionalProperties:
+        type: integer
+        description: Net winnings/losses for each player
+        example: 100
+      example:
+        "0": 100
+        "1": -50
+        "2": -50
+        "3": 0
+        "4": 0
+        "5": 0
+
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
+          example: "Invalid action: Cannot check when facing a bet"
+      example:
+        detail: "Invalid action: Cannot check when facing a bet"
+
+security:
+  - {} # No security for this API
+
+externalDocs:
+  description: Find out more about poker rules
+  url: https://www.pokerstars.com/poker/games/rules/

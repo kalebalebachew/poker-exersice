@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "poker-backend"
+version = "0.1.0"
+description = "Backend for Poker application"
+authors = ["Kaleb Alebachew <kalebalebachew4@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "0.115.0"
+uvicorn = "0.32.0"
+psycopg2-binary = "2.9.9"
+pokerkit = "0.4.0"
+pydantic-settings = "2.2.1"
+pyyaml = "6.0.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "8.3.3"
+httpx = "0.27.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api" 

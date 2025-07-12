@@ -37,9 +37,10 @@ const ActionControls = () => {
 
   function getLastBetAmount(): number {
     // Find the last bet or raise in the actions
-    const bettingActions = gameState.actions.filter(
-      (action) => action.type === "bet" || action.type === "raise"
-    );
+    const bettingActions =
+      gameState?.actions.filter(
+        (action) => action.type === "bet" || action.type === "raise"
+      ) || [];
     if (bettingActions.length === 0) return 0;
     return bettingActions[bettingActions.length - 1].amount || 0;
   }
@@ -59,15 +60,13 @@ const ActionControls = () => {
   };
 
   const incrementAmount = (
-    setter: React.Dispatch<React.SetStateAction<number>>,
-    value: number
+    setter: React.Dispatch<React.SetStateAction<number>>
   ) => {
     setter((prev) => prev + BIG_BLIND_SIZE);
   };
 
   const decrementAmount = (
-    setter: React.Dispatch<React.SetStateAction<number>>,
-    value: number
+    setter: React.Dispatch<React.SetStateAction<number>>
   ) => {
     setter((prev) => Math.max(BIG_BLIND_SIZE, prev - BIG_BLIND_SIZE));
   };
@@ -110,7 +109,7 @@ const ActionControls = () => {
         </Button>
 
         <Button
-          onClick={() => decrementAmount(setBetAmount, betAmount)}
+          onClick={() => decrementAmount(setBetAmount)}
           disabled={isLoading || !canBet || betAmount <= BIG_BLIND_SIZE}
           variant="outline"
           size="icon"
@@ -119,7 +118,7 @@ const ActionControls = () => {
         </Button>
 
         <Button
-          onClick={() => incrementAmount(setBetAmount, betAmount)}
+          onClick={() => incrementAmount(setBetAmount)}
           disabled={isLoading || !canBet}
           variant="outline"
           size="icon"
@@ -138,7 +137,7 @@ const ActionControls = () => {
         </Button>
 
         <Button
-          onClick={() => decrementAmount(setRaiseAmount, raiseAmount)}
+          onClick={() => decrementAmount(setRaiseAmount)}
           disabled={
             isLoading || !canRaise || raiseAmount <= lastBet + BIG_BLIND_SIZE
           }
@@ -149,7 +148,7 @@ const ActionControls = () => {
         </Button>
 
         <Button
-          onClick={() => incrementAmount(setRaiseAmount, raiseAmount)}
+          onClick={() => incrementAmount(setRaiseAmount)}
           disabled={isLoading || !canRaise}
           variant="outline"
           size="icon"

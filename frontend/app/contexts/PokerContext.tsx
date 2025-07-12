@@ -22,19 +22,6 @@ interface PokerContextType {
   formatActionShort: (action: Action) => string;
 }
 
-const defaultGameState: GameState = {
-  id: "",
-  stacks: [1000, 1000, 1000, 1000, 1000, 1000],
-  positions: {
-    dealer: 0,
-    sb: 1,
-    bb: 2,
-  },
-  player_cards: {},
-  board_cards: [],
-  actions: [],
-};
-
 const PokerContext = createContext<PokerContextType | undefined>(undefined);
 
 export const PokerProvider = ({ children }: { children: ReactNode }) => {
@@ -177,7 +164,7 @@ export const PokerProvider = ({ children }: { children: ReactNode }) => {
       case "allin":
         return "allin";
       case "deal_flop":
-        return gameState?.board_cards.slice(0, 3).join("");
+        return gameState?.board_cards.slice(0, 3).join("") || "";
       case "deal_turn":
         return gameState?.board_cards[3] || "";
       case "deal_river":

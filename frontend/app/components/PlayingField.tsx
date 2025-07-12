@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { usePoker } from "../contexts/PokerContext";
 import { formatCards, formatActionForLog } from "../utils/poker";
-import { Action } from "../services/api";
 
 const PlayingField = () => {
   const {
@@ -28,7 +27,7 @@ const PlayingField = () => {
       const logEntry = formatActionForLog(lastAction, playerIndex);
       setLogEntries((prev) => [...prev, logEntry]);
     }
-  }, [gameState?.actions.length]);
+  }, [gameState?.actions.length, gameState]);
 
   const handleStackChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
@@ -74,7 +73,7 @@ const PlayingField = () => {
         </div>
 
         {gameState && (
-          <div className="space-y-2">
+          <div className="space-y-2 player-cards">
             {/* Player information */}
             {gameState.stacks.map((stack, index) => (
               <div key={index} className="text-sm">
@@ -97,11 +96,13 @@ const PlayingField = () => {
             </div>
 
             {/* Log entries */}
-            {logEntries.map((entry, index) => (
-              <div key={index} className="text-sm">
-                {entry}
-              </div>
-            ))}
+            <div className="play-log">
+              {logEntries.map((entry, index) => (
+                <div key={index} className="text-sm">
+                  {entry}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </CardContent>

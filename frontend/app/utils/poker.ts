@@ -78,8 +78,10 @@ export const getPositionName = (
 };
 
 // Action formatting for log
+import { Action } from "../services/api";
+
 export const formatActionForLog = (
-  action: any,
+  action: Action,
   playerIndex: number
 ): string => {
   const playerPrefix = `Player ${playerIndex + 1}`;

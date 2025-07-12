@@ -98,13 +98,9 @@ export const pokerApi = {
   },
 
   // Game state management
-  createNewGame: async (
-    numPlayers: number = 6,
-    stackSize: number = 1000
-  ): Promise<GameState> => {
+  createNewGame: async (): Promise<GameState> => {
     try {
       // The backend doesn't accept parameters for createNewGame
-      // We'll need to modify the game state after creation if we want custom stack sizes
       const response = await api.post(`${API_PREFIX}/games/`);
       return response.data;
     } catch (error) {

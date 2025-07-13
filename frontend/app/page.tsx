@@ -19,7 +19,7 @@ export default function Home() {
             <div className="flex-grow overflow-hidden">
               <PlayingField />
             </div>
-            <div>
+            <div className="mt-auto">
               <ActionControls />
             </div>
           </div>

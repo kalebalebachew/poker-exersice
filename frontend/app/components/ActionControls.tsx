@@ -72,95 +72,93 @@ const ActionControls = () => {
   };
 
   return (
-    <div className="flex flex-col space-y-4">
-      <div className="flex space-x-2">
-        <Button
-          onClick={() => handleAction("fold")}
-          disabled={isLoading}
-          variant="destructive"
-        >
-          Fold
-        </Button>
+    <div className="flex flex-wrap gap-2">
+      <Button
+        onClick={() => handleAction("fold")}
+        disabled={isLoading}
+        className="bg-blue-400 hover:bg-blue-500 text-white"
+      >
+        Fold
+      </Button>
 
-        <Button
-          onClick={() => handleAction("check")}
-          disabled={isLoading || !canCheck}
-          variant="outline"
-        >
-          Check
-        </Button>
+      <Button
+        onClick={() => handleAction("check")}
+        disabled={isLoading || !canCheck}
+        className="bg-green-400 hover:bg-green-500 text-white"
+      >
+        Check
+      </Button>
 
-        <Button
-          onClick={() => handleAction("call")}
-          disabled={isLoading || !canCall}
-          variant="outline"
-        >
-          Call
-        </Button>
-      </div>
+      <Button
+        onClick={() => handleAction("call")}
+        disabled={isLoading || !canCall}
+        className="bg-green-400 hover:bg-green-500 text-white"
+      >
+        Call
+      </Button>
 
-      <div className="flex items-center space-x-2">
-        <Button
-          onClick={() => handleAction("bet", betAmount)}
-          disabled={isLoading || !canBet}
-          variant="secondary"
-        >
-          Bet {betAmount}
-        </Button>
+      <Button
+        onClick={() => handleAction("bet", betAmount)}
+        disabled={isLoading || !canBet}
+        className="bg-orange-300 hover:bg-orange-400 text-white"
+      >
+        Bet {betAmount}
+      </Button>
 
-        <Button
-          onClick={() => decrementAmount(setBetAmount)}
-          disabled={isLoading || !canBet || betAmount <= BIG_BLIND_SIZE}
-          variant="outline"
-          size="icon"
-        >
-          -
-        </Button>
+      <Button
+        onClick={() => decrementAmount(setBetAmount)}
+        disabled={isLoading || !canBet || betAmount <= BIG_BLIND_SIZE}
+        variant="outline"
+        size="icon"
+        className="px-2"
+      >
+        -
+      </Button>
 
-        <Button
-          onClick={() => incrementAmount(setBetAmount)}
-          disabled={isLoading || !canBet}
-          variant="outline"
-          size="icon"
-        >
-          +
-        </Button>
-      </div>
+      <Button
+        onClick={() => incrementAmount(setBetAmount)}
+        disabled={isLoading || !canBet}
+        variant="outline"
+        size="icon"
+        className="px-2"
+      >
+        +
+      </Button>
 
-      <div className="flex items-center space-x-2">
-        <Button
-          onClick={() => handleAction("raise", raiseAmount)}
-          disabled={isLoading || !canRaise}
-          variant="secondary"
-        >
-          Raise {raiseAmount}
-        </Button>
+      <Button
+        onClick={() => handleAction("raise", raiseAmount)}
+        disabled={isLoading || !canRaise}
+        className="bg-orange-300 hover:bg-orange-400 text-white"
+      >
+        Raise {raiseAmount}
+      </Button>
 
-        <Button
-          onClick={() => decrementAmount(setRaiseAmount)}
-          disabled={
-            isLoading || !canRaise || raiseAmount <= lastBet + BIG_BLIND_SIZE
-          }
-          variant="outline"
-          size="icon"
-        >
-          -
-        </Button>
+      <Button
+        onClick={() => decrementAmount(setRaiseAmount)}
+        disabled={
+          isLoading || !canRaise || raiseAmount <= lastBet + BIG_BLIND_SIZE
+        }
+        variant="outline"
+        size="icon"
+        className="px-2"
+      >
+        -
+      </Button>
 
-        <Button
-          onClick={() => incrementAmount(setRaiseAmount)}
-          disabled={isLoading || !canRaise}
-          variant="outline"
-          size="icon"
-        >
-          +
-        </Button>
-      </div>
+      <Button
+        onClick={() => incrementAmount(setRaiseAmount)}
+        disabled={isLoading || !canRaise}
+        variant="outline"
+        size="icon"
+        className="px-2"
+      >
+        +
+      </Button>
 
       <Button
         onClick={() => handleAction("allin")}
         disabled={isLoading}
-        variant="default"
+        className="bg-red-500 hover:bg-red-600 text-white"
       >
         ALLIN
       </Button>

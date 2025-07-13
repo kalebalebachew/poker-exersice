@@ -18,11 +18,11 @@ const HandHistory = () => {
 
   // Format player positions
   const formatPositions = (history: HandHistoryType) => {
-    return `Stack ${history.stacks[0]}: Dealer: Player ${
+    return `Stack ${history.stacks[0]}; Dealer: Player ${
       history.positions.dealer + 1
-    }, Player ${history.positions.sb + 1} Small blind, Player ${
+    }; Plater ${history.positions.sb + 1} Small blind; Player ${
       history.positions.bb + 1
-    } Big blind`;
+    }`;
   };
 
   // Format player hands
@@ -33,6 +33,11 @@ const HandHistory = () => {
         return `Player ${parseInt(playerIndex) + 1}: ${formattedCards}`;
       })
       .join("; ");
+  };
+
+  // Format actions
+  const formatActions = (history: HandHistoryType) => {
+    return `Actions: ${formatActionSequence(history)}`;
   };
 
   // Format winnings
@@ -51,8 +56,8 @@ const HandHistory = () => {
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader className="flex flex-row items-center justify-between">
+    <Card className="w-full h-full flex flex-col">
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle>Hand history</CardTitle>
         {handHistories.length > 0 && (
           <Button
@@ -65,19 +70,17 @@ const HandHistory = () => {
           </Button>
         )}
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4 h-[400px] overflow-y-auto pr-2">
+      <CardContent className="flex-grow overflow-y-auto pr-2">
+        <div className="space-y-4">
           {handHistories.map((history) => (
             <div
               key={history.id}
-              className="hand-history-item bg-muted p-4 rounded-md"
+              className="hand-history-item bg-blue-50 p-4 rounded-md"
             >
-              <div className="text-sm font-medium">{history.id}</div>
+              <div className="text-sm font-medium">Hand #{history.id}</div>
               <div className="text-sm">{formatPositions(history)}</div>
               <div className="text-sm">Hands: {formatHands(history)}</div>
-              <div className="text-sm">
-                Actions: {formatActionSequence(history)}
-              </div>
+              <div className="text-sm">{formatActions(history)}</div>
               <div className="text-sm">Winnings: {formatWinnings(history)}</div>
             </div>
           ))}

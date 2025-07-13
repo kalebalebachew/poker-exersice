@@ -47,11 +47,11 @@ const PlayingField = () => {
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
+    <Card className="w-full h-full flex flex-col">
+      <CardHeader className="pb-2">
         <CardTitle>Playing field log</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col flex-grow">
         <div className="flex items-center space-x-4 mb-4">
           <div className="flex items-center space-x-2">
             <span>Stacks</span>
@@ -59,21 +59,21 @@ const PlayingField = () => {
               type="number"
               value={stackSize}
               onChange={handleStackChange}
-              className="w-24"
+              className="w-24 bg-gray-100"
               min={1}
             />
           </div>
           <Button
             onClick={gameState ? handleReset : handleStart}
             disabled={isLoading}
-            variant="outline"
+            variant={gameState ? "destructive" : "outline"}
           >
-            {gameState ? "Reset" : "Start"}
+            {gameState ? "Reset" : "Apply"}
           </Button>
         </div>
 
         {gameState && (
-          <div className="space-y-2 player-cards h-[300px] overflow-y-auto pr-2">
+          <div className="space-y-1 overflow-y-auto h-[300px] pr-2">
             {/* Player information */}
             {gameState.stacks.map((stack, index) => (
               <div key={index} className="text-sm">
@@ -87,11 +87,15 @@ const PlayingField = () => {
               Player {gameState.positions.dealer + 1} is the dealer
               {gameState.positions.sb !== undefined && (
                 <span>
-                  , Player {gameState.positions.sb + 1} is Small blind
+                  , Player {gameState.positions.sb + 1} posts small blind - 20
+                  chips
                 </span>
               )}
               {gameState.positions.bb !== undefined && (
-                <span>, Player {gameState.positions.bb + 1} is Big blind</span>
+                <span>
+                  , Player {gameState.positions.bb + 1} posts big blind - 40
+                  chips
+                </span>
               )}
             </div>
 
